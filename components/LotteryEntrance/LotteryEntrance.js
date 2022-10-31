@@ -48,12 +48,14 @@ function LotteryEntrance() {
     })
 
     const updateUIValues = async () => {
-        const entranceFeeFromCall = (await getEntraenceFee()).toString()
-        const playersFromCall = (await getNumPlayers()).toString()
+        const entranceFeeFromCall = await getEntraenceFee()
+        const playersFromCall = await getNumPlayers()
         const recentWinnerFromCall = await getRecentWinner()
-        setEntranceFee(entranceFeeFromCall)
-        setPlayers(playersFromCall)
-        setRecentWinner(recentWinnerFromCall)
+        if (entranceFeeFromCall && playersFromCall && recentWinnerFromCall) {
+            setEntranceFee(entranceFeeFromCall.toString())
+            setPlayers(playersFromCall.toString())
+            setRecentWinner(recentWinnerFromCall)
+        }
     }
 
     const handleSuccess = async (tx) => {
@@ -82,12 +84,13 @@ function LotteryEntrance() {
             {raffleAddress ? (
                 <div>
                     <p>
-                        Entrance Fee: {ethers.utils.formatEther(entranceFee)}
-                        ETH
+                        Entrance Fee:{" "}
+                        {Number(ethers.utils.formatEther(entranceFee))} ETH
                     </p>
                     <p>Numer of players: {players} </p>
                     <p>Recent Winner: {recentWinner}</p>
                     <button
+                        className="border-2 rounded-lg px-4 py-2 bg-sky-500 border-sky-500 text-white mt-4"
                         onClick={async () =>
                             await enterRaffle({
                                 onSuccess: handleSuccess,
